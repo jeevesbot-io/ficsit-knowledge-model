@@ -117,6 +117,11 @@ fails CI.
    dump at stable URLs.
 5. Importers and exporters for other open-source planners.
 
+## Contributing
+
+Branches are `main` ← `dev` ← `feature/*`; open pull requests into `dev`. See
+[CLAUDE.md](CLAUDE.md) for commands and repository rules.
+
 ## Licence
 
 Code, schema and queries: [MIT](LICENSE). Game data has its own licences; see
