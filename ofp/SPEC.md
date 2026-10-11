@@ -12,6 +12,7 @@ be the first stable one. Feedback from tool authors is welcome.
 - JSON-LD context: [`model/generated/ofp.context.jsonld`](../model/generated/ofp.context.jsonld)
 - Conformance fixtures: [`fixtures/`](fixtures/)
 - Reference validator: `npm run ofp:validate -- plan.json` ([`src/ofp/validate.ts`](../src/ofp/validate.ts))
+- Converters for SatisfactoryTools and satisfactory-logistics: `npm run ofp:convert` ([`src/interop/`](../src/interop/))
 
 ## Example
 

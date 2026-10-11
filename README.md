@@ -104,6 +104,25 @@ npm run ofp:validate -- my-plan.ofp.json   # schema + rules against the game dat
 `ofp/fixtures/` holds conformance fixtures, with the expected issue codes in
 `manifest.json`.
 
+### Converters
+
+`src/interop/` converts plans to and from two open-source planners. Both use
+the same game class names, so items and recipes map directly. Each conversion
+returns notes on anything the target format can't hold.
+
+| Planner                                                                         | Format                               | Import                                              | Export                                                                                           |
+| ------------------------------------------------------------------------------- | ------------------------------------ | --------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| [SatisfactoryTools](https://github.com/greeny/SatisfactoryTools)                | `.sft` export (production tabs)      | Each tab becomes a targets-only factory             | Each factory becomes a tab; world raw inputs become resource limits; used alternates are allowed |
+| [satisfactory-logistics](https://github.com/rockfactory/satisfactory-logistics) | Factory export or game backup (JSON) | Factories, world inputs and links between factories | A game backup; each solver is limited to the plan's recipes                                      |
+
+```sh
+npm run ofp:convert -- import sft plans.sft plan.ofp.json
+npm run ofp:convert -- export logistics plan.ofp.json backup.json
+```
+
+Neither format stores production lines the way OFP does (both re-solve), so
+lines travel as targets plus recipe choices.
+
 ## Package and site
 
 **npm package.** `npm pack` builds an ES-module package (`prepack` runs the
@@ -191,7 +210,8 @@ fails CI.
 4. Publish an npm package and browsable data (Datasette Lite), plus the RDF
    dump at stable URLs. Built (see [Package and site](#package-and-site));
    publishing to npm and turning on Pages are still to do.
-5. Importers and exporters for other open-source planners.
+5. ~~Importers and exporters for other open-source planners.~~ First two done
+   (SatisfactoryTools, satisfactory-logistics); see [Converters](#converters).
 
 ## Contributing
 

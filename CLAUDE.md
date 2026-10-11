@@ -14,6 +14,7 @@ format. Read `README.md` first.
 - `npm run pack:smoke`: packs the npm package and uses it from a scratch project
 - `npm run gen`: regenerates `model/generated/` from the schema (needs `uv`)
 - `npm run ofp:validate -- plan.json`: checks an Open Factory Plan (`ofp/SPEC.md`)
+- `npm run ofp:convert -- <import|export> <sft|logistics> <in> <out>`: converts plans
 
 Done = `npm run format:check && npm run lint && npm run typecheck && npm test && npm run build` all green
 (CI also runs `npm run site` and `npm run pack:smoke`).

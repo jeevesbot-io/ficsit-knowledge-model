@@ -24,6 +24,20 @@ export {
   validatePlan,
 } from './ofp/validate.ts';
 export { planToJsonLd, planToNQuads } from './ofp/rdf.ts';
+export type { Conversion } from './interop/common.ts';
+export {
+  type SftTab,
+  decodeSft,
+  encodeSft,
+  planFromSft,
+  planToSft,
+} from './interop/satisfactory-tools.ts';
+export {
+  type LogisticsFactoryExport,
+  type LogisticsGame,
+  planFromLogistics,
+  planToLogistics,
+} from './interop/satisfactory-logistics.ts';
 
 /** The bundled game data (`dist/game.json`), with provenance on every record. */
 export function loadGameData(): SourcedGameData {

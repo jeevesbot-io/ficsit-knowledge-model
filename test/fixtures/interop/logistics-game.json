@@ -1,0 +1,38 @@
+{
+  "game": {
+    "id": "4f0c8a52-0000-4000-8000-000000000001",
+    "name": "Hand-written backup",
+    "factoriesIds": ["f-ingots", "f-screws"],
+    "settings": { "noHighlight100PercentUsage": false, "highlight100PercentColor": "#339af0" },
+    "allowedRecipes": []
+  },
+  "factories": [
+    {
+      "id": "f-screws",
+      "name": "Screw works",
+      "inputs": [{ "factoryId": "f-ingots", "resource": "Desc_IronIngot_C", "amount": 30 }],
+      "outputs": [{ "resource": "Desc_IronScrew_C", "amount": 120 }],
+      "progress": "todo"
+    },
+    {
+      "id": "f-ingots",
+      "name": "Ingot smelter",
+      "inputs": [
+        { "factoryId": "WORLD", "resource": "Desc_OreIron_C", "amount": 30, "constraint": "max" },
+        { "factoryId": null, "resource": null, "amount": null }
+      ],
+      "outputs": [
+        { "resource": "Desc_IronIngot_C", "amount": 30 },
+        { "resource": "Desc_IronPlate_C", "amount": 0, "objective": "max" }
+      ],
+      "progress": "done"
+    }
+  ],
+  "solvers": [
+    {
+      "id": "f-screws",
+      "isFactory": true,
+      "request": { "allowedRecipes": ["Recipe_IronRod_C", "Recipe_Screw_C"] }
+    }
+  ]
+}
