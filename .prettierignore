@@ -3,3 +3,4 @@ node_modules
 model/generated
 data
 package-lock.json
+lib

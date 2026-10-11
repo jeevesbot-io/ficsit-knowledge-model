@@ -7,7 +7,7 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import jsonld from 'jsonld';
-import { DATA_NS } from '../graph.ts';
+import { DATA_NS } from '../ns.ts';
 import type { Plan } from './validate.ts';
 
 const MODEL_DIR = join(import.meta.dirname, '..', '..', 'model', 'generated');

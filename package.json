@@ -9,29 +9,69 @@
     "type": "git",
     "url": "https://github.com/solstice035/ficsit-knowledge-model.git"
   },
+  "main": "./lib/index.js",
+  "types": "./lib/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./lib/index.d.ts",
+      "default": "./lib/index.js"
+    },
+    "./game.json": "./dist/game.json",
+    "./game.sqlite": "./dist/game.sqlite",
+    "./game.ttl": "./dist/game.ttl",
+    "./NOTICE.md": "./dist/NOTICE.md",
+    "./schema/ficsit.schema.json": "./model/generated/ficsit.schema.json",
+    "./schema/ficsit.context.jsonld": "./model/generated/ficsit.context.jsonld",
+    "./schema/ficsit.shacl.ttl": "./model/generated/ficsit.shacl.ttl",
+    "./schema/ficsit.sql": "./model/generated/ficsit.sql",
+    "./schema/ficsit.linkml.yaml": "./model/ficsit.linkml.yaml",
+    "./schema/ofp.schema.json": "./model/generated/ofp.schema.json",
+    "./schema/ofp.context.jsonld": "./model/generated/ofp.context.jsonld",
+    "./schema/ofp.linkml.yaml": "./model/ofp.linkml.yaml",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "lib/",
+    "dist/game.json",
+    "dist/game.sqlite",
+    "dist/game.ttl",
+    "dist/NOTICE.md",
+    "model/ficsit.linkml.yaml",
+    "model/ofp.linkml.yaml",
+    "model/generated/",
+    "ofp/SPEC.md",
+    "ofp/fixtures/",
+    "NOTICE.md"
+  ],
   "engines": {
     "node": ">=22.22.0"
   },
   "scripts": {
     "gen": "sh scripts/gen.sh",
     "build": "tsx src/build.ts",
+    "build:lib": "tsc -p tsconfig.lib.json",
+    "site": "tsx src/site.ts",
+    "pack:smoke": "sh scripts/pack-smoke.sh",
     "ofp:validate": "tsx src/ofp/cli.ts",
     "test": "vitest run",
     "test:watch": "vitest",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "prepack": "npm run build && npm run build:lib"
+  },
+  "dependencies": {
+    "ajv": "8.20.0",
+    "jsonld": "9.0.0"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",
     "@types/jsonld": "1.5.15",
     "@types/node": "22.20.5",
     "@zazuko/env": "3.0.1",
-    "ajv": "8.20.0",
     "eslint": "10.12.0",
     "globals": "17.13.0",
-    "jsonld": "9.0.0",
     "oxigraph": "0.5.11",
     "prettier": "3.9.10",
     "rdf-validate-shacl": "0.6.5",

@@ -9,11 +9,14 @@ format. Read `README.md` first.
 
 - `npm test`: JSON Schema, SHACL, and the SQL ↔ SPARQL example queries (Vitest, Node)
 - `npm run lint`, `npm run typecheck`, `npm run format:check`
-- `npm run build`: writes `dist/game.sqlite`, `dist/game.ttl` and `dist/NOTICE.md`
+- `npm run build`: writes `dist/game.json`, `dist/game.sqlite`, `dist/game.ttl` and `dist/NOTICE.md`
+- `npm run site`: writes `dist/site/` for GitHub Pages (after `build`)
+- `npm run pack:smoke`: packs the npm package and uses it from a scratch project
 - `npm run gen`: regenerates `model/generated/` from the schema (needs `uv`)
 - `npm run ofp:validate -- plan.json`: checks an Open Factory Plan (`ofp/SPEC.md`)
 
-Done = `npm run format:check && npm run lint && npm run typecheck && npm test && npm run build` all green.
+Done = `npm run format:check && npm run lint && npm run typecheck && npm test && npm run build` all green
+(CI also runs `npm run site` and `npm run pack:smoke`).
 
 ## Rules
 

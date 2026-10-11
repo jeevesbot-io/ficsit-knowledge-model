@@ -27,6 +27,7 @@ npm install
 npm test        # JSON Schema, SHACL and the SQL ↔ SPARQL example queries
 npm run build   # dist/game.sqlite, dist/game.ttl, dist/NOTICE.md
 npm run gen     # regenerate model/generated/ from the LinkML schema (needs uv)
+npm run site    # dist/site: the static site for GitHub Pages (after npm run build)
 ```
 
 ## How it fits together
@@ -43,9 +44,11 @@ model/ofp.linkml.yaml                  ← Open Factory Plan (ofp/SPEC.md)
   ├── generated/ofp.schema.json        JSON Schema for plans
   └── generated/ofp.context.jsonld     JSON-LD context: plans as RDF
 
-data/field-guide/*.json  ──  npm run build  ──►  dist/game.sqlite
+data/field-guide/*.json  ──  npm run build  ──►  dist/game.json
+                                                 dist/game.sqlite
                                                  dist/game.ttl
                                                  dist/NOTICE.md
+                             npm run site   ──►  dist/site/ (GitHub Pages)
 ```
 
 - `model/generated/` is committed and **generated**: never hand-edit it. Change
@@ -62,7 +65,8 @@ data/field-guide/*.json  ──  npm run build  ──►  dist/game.sqlite
 
 Data IRIs keep the game's class names, so `fgd:Desc_IronPlate_C` is Iron Plate.
 Every Satisfactory tool already uses these names, which is what makes the data
-linkable across tools. The URLs do not resolve yet.
+linkable across tools. Once GitHub Pages is on, every data IRI resolves to a
+page and every vocabulary term to an anchor (see [Package and site](#package-and-site)).
 
 ## Example queries
 
@@ -99,6 +103,29 @@ npm run ofp:validate -- my-plan.ofp.json   # schema + rules against the game dat
 
 `ofp/fixtures/` holds conformance fixtures, with the expected issue codes in
 `manifest.json`.
+
+## Package and site
+
+**npm package.** `npm pack` builds an ES-module package (`prepack` runs the
+build and compiles `lib/`). It exports `loadGameData()`, `validatePlan()`,
+`planToJsonLd()` and the types, plus the data and schemas as files:
+
+```js
+import { loadGameData, validatePlan } from 'ficsit-knowledge-model';
+import schema from 'ficsit-knowledge-model/schema/ofp.schema.json' with { type: 'json' };
+// Also: ficsit-knowledge-model/game.json, /game.sqlite, /game.ttl, /schema/ficsit.*
+```
+
+`npm run pack:smoke` (run in CI) installs the packed tarball into a scratch
+project and uses it. The package is still `"private": true`: publishing it is
+a release decision.
+
+**Site.** `.github/workflows/pages.yml` publishes `dist/site/` from `main`:
+downloads of the dumps and schemas at stable URLs, a
+[Datasette Lite](https://lite.datasette.io/) link for SQL in the browser, the
+vocabulary at `/vocab`, and one page per record at `/id/<class name>`, with
+links, "made by" and "used in" backlinks, and provenance. It needs Pages
+turned on, with "GitHub Actions" as the source.
 
 ## Provenance
 
@@ -162,7 +189,8 @@ fails CI.
    Done (draft); see [Open Factory Plan](#open-factory-plan).
 3. Move the data pipeline here, so the Field Guide consumes this repository.
 4. Publish an npm package and browsable data (Datasette Lite), plus the RDF
-   dump at stable URLs.
+   dump at stable URLs. Built (see [Package and site](#package-and-site));
+   publishing to npm and turning on Pages are still to do.
 5. Importers and exporters for other open-source planners.
 
 ## Contributing

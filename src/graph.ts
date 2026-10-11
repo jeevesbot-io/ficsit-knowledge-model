@@ -15,6 +15,7 @@ import rdf from '@zazuko/env/web.js';
 import jsonld from 'jsonld';
 import { Store, type Term, defaultGraph as oxigraphDefaultGraph } from 'oxigraph';
 import SHACLValidator from 'rdf-validate-shacl';
+import { DATA_NS, VOCAB_NS } from './ns.ts';
 import { type SourcedGameData, withProvenance } from './provenance.ts';
 import type {
   Building,
@@ -32,10 +33,7 @@ export const MODEL_DIR = join(ROOT, 'model', 'generated');
 /** Input snapshot from the FICSIT Field Guide data pipeline (see data/README.md). */
 const DATA_DIR = join(ROOT, 'data', 'field-guide');
 
-/** Namespace for data IRIs (`fgd:Desc_IronPlate_C`). */
-export const DATA_NS = 'https://solstice035.github.io/ficsit-knowledge-model/id/';
-/** Namespace for the vocabulary (`ficsit:Recipe`, `ficsit:producedIn`). */
-export const VOCAB_NS = 'https://solstice035.github.io/ficsit-knowledge-model/vocab#';
+export { DATA_NS, VOCAB_NS } from './ns.ts';
 
 /** The game data with provenance on every record (see src/provenance.ts). */
 export type GameData = SourcedGameData;
