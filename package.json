@@ -15,6 +15,7 @@
   "scripts": {
     "gen": "sh scripts/gen.sh",
     "build": "tsx src/build.ts",
+    "ofp:validate": "tsx src/ofp/cli.ts",
     "test": "vitest run",
     "test:watch": "vitest",
     "lint": "eslint .",

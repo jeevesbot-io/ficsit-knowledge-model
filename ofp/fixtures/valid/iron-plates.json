@@ -1,0 +1,34 @@
+{
+  "ofpVersion": "0",
+  "name": "Iron plates",
+  "description": "60 Iron Ore/min into 40 Iron Plates/min. Balanced exactly.",
+  "factories": [
+    {
+      "factoryId": "iron-plates",
+      "name": "Iron plates",
+      "inputs": [
+        {
+          "item": "Desc_OreIron_C",
+          "ratePerMin": 60
+        }
+      ],
+      "lines": [
+        {
+          "recipe": "Recipe_IngotIron_C",
+          "building": "Build_SmelterMk1_C",
+          "machines": 2
+        },
+        {
+          "recipe": "Recipe_IronPlate_C",
+          "machines": 2
+        }
+      ],
+      "outputs": [
+        {
+          "item": "Desc_IronPlate_C",
+          "ratePerMin": 40
+        }
+      ]
+    }
+  ]
+}

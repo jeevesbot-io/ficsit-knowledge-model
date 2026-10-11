@@ -1,0 +1,23 @@
+{
+  "ofpVersion": "0",
+  "name": "Missing supplier",
+  "factories": [
+    {
+      "factoryId": "frames",
+      "name": "Frames",
+      "outputs": [
+        {
+          "item": "Desc_ModularFrame_C",
+          "ratePerMin": 5
+        }
+      ],
+      "inputs": [
+        {
+          "item": "Desc_Motor_C",
+          "ratePerMin": 5,
+          "fromFactory": "motors"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "ofpVersion": "0",
+  "name": "Amplified rods",
+  "description": "A full Somersloop slot doubles output, not input.",
+  "factories": [
+    {
+      "factoryId": "f",
+      "name": "F",
+      "inputs": [
+        {
+          "item": "Desc_IronIngot_C",
+          "ratePerMin": 15
+        }
+      ],
+      "lines": [
+        {
+          "recipe": "Recipe_IronRod_C",
+          "machines": 1,
+          "somersloops": 1
+        }
+      ],
+      "outputs": [
+        {
+          "item": "Desc_IronRod_C",
+          "ratePerMin": 30
+        }
+      ]
+    }
+  ]
+}

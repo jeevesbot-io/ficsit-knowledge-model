@@ -1,0 +1,19 @@
+{
+  "ofpVersion": "0",
+  "name": "Two sloops in a Constructor",
+  "factories": [
+    {
+      "factoryId": "f",
+      "name": "F",
+      "inputs": [],
+      "lines": [
+        {
+          "recipe": "Recipe_IronRod_C",
+          "machines": 1,
+          "somersloops": 2
+        }
+      ],
+      "outputs": []
+    }
+  ]
+}

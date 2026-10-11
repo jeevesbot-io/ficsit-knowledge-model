@@ -1,0 +1,19 @@
+{
+  "ofpVersion": "0",
+  "name": "Clock 300%",
+  "factories": [
+    {
+      "factoryId": "f",
+      "name": "F",
+      "inputs": [],
+      "lines": [
+        {
+          "recipe": "Recipe_IronRod_C",
+          "machines": 1,
+          "clockPercent": 300
+        }
+      ],
+      "outputs": []
+    }
+  ]
+}

@@ -22,3 +22,6 @@ sys.stdout.write("".join(out + sorted(run)))
 ' > generated/ficsit.sql
 $LINKML gen-jsonld-context ficsit.linkml.yaml > generated/ficsit.context.jsonld
 $LINKML gen-shacl ficsit.linkml.yaml > generated/ficsit.shacl.ttl
+# Open Factory Plan (ofp/SPEC.md): JSON Schema and JSON-LD context.
+$LINKML gen-json-schema --top-class Plan ofp.linkml.yaml > generated/ofp.schema.json
+$LINKML gen-jsonld-context ofp.linkml.yaml > generated/ofp.context.jsonld

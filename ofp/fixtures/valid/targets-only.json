@@ -1,0 +1,17 @@
+{
+  "ofpVersion": "0",
+  "name": "Modular Frame target",
+  "description": "Targets only, no production lines: a request for a tool to solve.",
+  "factories": [
+    {
+      "factoryId": "frames",
+      "name": "Frames",
+      "outputs": [
+        {
+          "item": "Desc_ModularFrame_C",
+          "ratePerMin": 5
+        }
+      ]
+    }
+  ]
+}

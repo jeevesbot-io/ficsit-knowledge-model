@@ -1,0 +1,19 @@
+{
+  "ofpVersion": "0",
+  "name": "Plates in a Smelter",
+  "factories": [
+    {
+      "factoryId": "f",
+      "name": "F",
+      "inputs": [],
+      "lines": [
+        {
+          "recipe": "Recipe_IronPlate_C",
+          "building": "Build_SmelterMk1_C",
+          "machines": 1
+        }
+      ],
+      "outputs": []
+    }
+  ]
+}

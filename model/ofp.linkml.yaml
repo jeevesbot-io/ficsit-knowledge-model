@@ -1,0 +1,242 @@
+id: https://solstice035.github.io/ficsit-knowledge-model/ofp
+name: ofp
+title: Open Factory Plan
+description: >-
+  A portable format for Satisfactory factory plans, so plans can move between
+  tools. Version 0 (draft): see ofp/SPEC.md. Items, recipes and buildings are
+  the game's class names, as in the FICSIT knowledge model.
+  Units: rates per minute, fluids in m³, world coordinates in metres
+  (x east, y south; north is −y).
+license: MIT
+version: 0.1.0
+
+prefixes:
+  ofp: https://solstice035.github.io/ficsit-knowledge-model/ofp#
+  ficsit: https://solstice035.github.io/ficsit-knowledge-model/vocab#
+  fgd: https://solstice035.github.io/ficsit-knowledge-model/id/
+  linkml: https://w3id.org/linkml/
+  schema: http://schema.org/
+
+default_prefix: ofp
+default_range: string
+
+imports:
+  - linkml:types
+
+classes:
+  Plan:
+    tree_root: true
+    description: One factory plan, made of one or more factories.
+    class_uri: ofp:Plan
+    slots:
+      - ofpVersion
+      - name
+      - description
+      - gameVersion
+      - tool
+      - factories
+    slot_usage:
+      name:
+        required: true
+
+  Tool:
+    description: The tool that wrote the plan.
+    class_uri: ofp:Tool
+    slots:
+      - name
+      - toolVersion
+      - url
+    slot_usage:
+      name:
+        required: true
+
+  Factory:
+    description: >-
+      One build site. Items enter as inputs, are made by production lines and
+      leave as outputs.
+    class_uri: ofp:Factory
+    slots:
+      - factoryId
+      - name
+      - location
+      - outputs
+      - inputs
+      - lines
+    slot_usage:
+      name:
+        required: true
+
+  Location:
+    description: Approximate centre of the factory in world coordinates.
+    class_uri: ofp:Location
+    slots:
+      - x
+      - y
+      - z
+
+  ItemRate:
+    description: A flow of one item.
+    class_uri: ofp:ItemRate
+    slots:
+      - item
+      - ratePerMin
+
+  FactoryInput:
+    is_a: ItemRate
+    description: >-
+      A flow into the factory: from another factory in the plan when
+      `fromFactory` is set, otherwise from the world (extraction or a train).
+    class_uri: ofp:FactoryInput
+    slots:
+      - fromFactory
+
+  ProductionLine:
+    description: >-
+      Identical machines running one recipe. Output per minute is
+      machines × clock/100 × 60/duration × amount × (1 + somersloops/slots).
+    class_uri: ofp:ProductionLine
+    slots:
+      - recipe
+      - building
+      - machines
+      - clockPercent
+      - somersloops
+
+  # References into the FICSIT knowledge model. A plan only uses their IDs (the
+  # game's class names); the classes exist so RDF links plans to game data.
+  Item:
+    description: An item in the knowledge model (`Desc_*_C`).
+    class_uri: ficsit:Item
+    slots:
+      - id
+  Recipe:
+    description: A recipe in the knowledge model (`Recipe_*_C`).
+    class_uri: ficsit:Recipe
+    slots:
+      - id
+  Building:
+    description: A building in the knowledge model (`Build_*_C`).
+    class_uri: ficsit:Building
+    slots:
+      - id
+
+slots:
+  # --- shared with the knowledge model (same IRIs) ---------------------------
+  name:
+    slot_uri: schema:name
+    description: Display name.
+  description:
+    slot_uri: schema:description
+    description: Free-text notes.
+  url:
+    range: uri
+    slot_uri: schema:url
+    description: Home page of the tool.
+  id:
+    identifier: true
+    range: uriorcurie
+    description: The game's class name, e.g. `Desc_IronPlate_C`.
+  item:
+    range: Item
+    required: true
+    slot_uri: ficsit:item
+    description: Item ID (game class name), e.g. `Desc_IronPlate_C`.
+  x:
+    range: double
+    required: true
+    slot_uri: ficsit:x
+    description: East (m).
+    unit:
+      ucum_code: m
+  y:
+    range: double
+    required: true
+    slot_uri: ficsit:y
+    description: South (m); north is −y.
+    unit:
+      ucum_code: m
+  z:
+    range: double
+    slot_uri: ficsit:z
+    description: Height (m).
+    unit:
+      ucum_code: m
+
+  # --- plan -------------------------------------------------------------------
+  ofpVersion:
+    required: true
+    description: Open Factory Plan version. This schema is version 0.
+    equals_string: '0'
+  gameVersion:
+    description: Game version or data bundle the plan was made against, e.g. `1.1`.
+  tool:
+    range: Tool
+    inlined: true
+    description: The tool that wrote the plan.
+  toolVersion:
+    description: Version of the tool that wrote the plan.
+  factories:
+    range: Factory
+    multivalued: true
+    required: true
+    inlined_as_list: true
+    minimum_cardinality: 1
+    description: Factories in the plan.
+
+  factoryId:
+    identifier: true
+    description: Unique within the plan, e.g. `steel-mill`.
+  location:
+    range: Location
+    inlined: true
+    description: Where the factory is.
+  outputs:
+    range: ItemRate
+    multivalued: true
+    inlined_as_list: true
+    description: Flows that leave the factory (its targets).
+  inputs:
+    range: FactoryInput
+    multivalued: true
+    inlined_as_list: true
+    description: Flows that enter the factory.
+  lines:
+    range: ProductionLine
+    multivalued: true
+    inlined_as_list: true
+    description: >-
+      Production lines. Omit them for a plan that only states targets, for a
+      tool to solve.
+
+  ratePerMin:
+    range: double
+    required: true
+    minimum_value: 0
+    description: Items per minute, or m³ per minute for fluids.
+    unit:
+      ucum_code: /min
+  fromFactory:
+    range: Factory
+    description: The factory in this plan that supplies the input.
+
+  recipe:
+    range: Recipe
+    required: true
+    description: Recipe ID (game class name), e.g. `Recipe_IronPlate_C`.
+  building:
+    range: Building
+    description: Building that runs the recipe; must be one of the recipe's `producedIn`.
+  machines:
+    range: integer
+    required: true
+    minimum_value: 1
+    description: Number of machines. Fractional plans round up and lower the clock.
+  clockPercent:
+    range: double
+    minimum_value: 1
+    maximum_value: 250
+    description: Clock speed of every machine in the line (default 100).
+  somersloops:
+    range: integer
+    minimum_value: 0
+    description: Somersloops in each machine (default 0).

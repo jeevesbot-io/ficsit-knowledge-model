@@ -39,6 +39,10 @@ model/ficsit.linkml.yaml               ← single source of truth (LinkML)
   ├── generated/ficsit.context.jsonld  JSON-LD context: turns the same JSON into RDF
   └── generated/ficsit.shacl.ttl       SHACL shapes: validates the RDF
 
+model/ofp.linkml.yaml                  ← Open Factory Plan (ofp/SPEC.md)
+  ├── generated/ofp.schema.json        JSON Schema for plans
+  └── generated/ofp.context.jsonld     JSON-LD context: plans as RDF
+
 data/field-guide/*.json  ──  npm run build  ──►  dist/game.sqlite
                                                  dist/game.ttl
                                                  dist/NOTICE.md
@@ -80,6 +84,21 @@ raw resources as leaves.
 
 Units: rates per minute, fluids in m³, power in MW, durations in seconds, world
 coordinates in metres (x east, y south; north is −y).
+
+## Open Factory Plan
+
+[`ofp/SPEC.md`](ofp/SPEC.md) defines **Open Factory Plan v0** (draft), a
+portable JSON format for factory plans: factories with inputs, outputs and
+production lines, using the same IDs and units as the game data. Its LinkML
+schema (`model/ofp.linkml.yaml`) generates a JSON Schema and a JSON-LD context,
+so a plan's RDF joins the game graph.
+
+```sh
+npm run ofp:validate -- my-plan.ofp.json   # schema + rules against the game data
+```
+
+`ofp/fixtures/` holds conformance fixtures, with the expected issue codes in
+`manifest.json`.
 
 ## Provenance
 
@@ -139,7 +158,8 @@ fails CI.
 
 1. ~~Provenance on every record (source, pinned URL, retrieval date, licence).~~
    Done; see [Provenance](#provenance).
-2. Open Factory Plan v0: a plan schema, validator and conformance fixtures.
+2. ~~Open Factory Plan v0: a plan schema, validator and conformance fixtures.~~
+   Done (draft); see [Open Factory Plan](#open-factory-plan).
 3. Move the data pipeline here, so the Field Guide consumes this repository.
 4. Publish an npm package and browsable data (Datasette Lite), plus the RDF
    dump at stable URLs.
