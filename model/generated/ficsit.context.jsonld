@@ -5,9 +5,11 @@
    },
    "@context": {
       "xsd": "http://www.w3.org/2001/XMLSchema#",
+      "dcterms": "http://purl.org/dc/terms/",
       "fgd": "https://solstice035.github.io/ficsit-knowledge-model/id/",
       "ficsit": "https://solstice035.github.io/ficsit-knowledge-model/vocab#",
       "linkml": "https://w3id.org/linkml/",
+      "prov": "http://www.w3.org/ns/prov#",
       "schema": "http://schema.org/",
       "skos": "http://www.w3.org/2004/02/skos/core#",
       "@vocab": "https://solstice035.github.io/ficsit-knowledge-model/vocab#",
@@ -66,6 +68,10 @@
       "dependsOn": {
          "@type": "@id",
          "@id": "dependsOn"
+      },
+      "derivedFrom": {
+         "@type": "@id",
+         "@id": "prov:wasDerivedFrom"
       },
       "description": {
          "@id": "schema:description"
@@ -135,6 +141,9 @@
          "@type": "xsd:double",
          "@id": "l"
       },
+      "licence": {
+         "@id": "dcterms:license"
+      },
       "mamTree": {
          "@id": "mamTree"
       },
@@ -197,6 +206,10 @@
          "@type": "@id",
          "@id": "resources"
       },
+      "retrievedAt": {
+         "@type": "xsd:date",
+         "@id": "retrievedAt"
+      },
       "scannerObjects": {
          "@id": "scannerObjects"
       },
@@ -214,6 +227,10 @@
       "sloopSlots": {
          "@type": "xsd:integer",
          "@id": "sloopSlots"
+      },
+      "sources": {
+         "@type": "@id",
+         "@id": "sources"
       },
       "supplemental": {
          "@type": "@id",
@@ -241,6 +258,10 @@
       "unlocks": {
          "@type": "@id",
          "@id": "unlocks"
+      },
+      "url": {
+         "@type": "xsd:anyURI",
+         "@id": "schema:url"
       },
       "variablePower": {
          "@type": "@id",
@@ -310,6 +331,9 @@
       },
       "SchematicUnlocks": {
          "@id": "SchematicUnlocks"
+      },
+      "Source": {
+         "@id": "Source"
       },
       "VariablePower": {
          "@id": "VariablePower"

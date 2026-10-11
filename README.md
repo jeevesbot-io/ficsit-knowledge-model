@@ -62,7 +62,7 @@ linkable across tools. The URLs do not resolve yet.
 
 ## Example queries
 
-`model/queries/` holds five questions, each written in SQL (`.sql`) and SPARQL
+`model/queries/` holds six questions, each written in SQL (`.sql`) and SPARQL
 (`.rq`). `test/graph.test.ts` runs both and checks they agree.
 
 | Query | Question                                                                             |
@@ -72,6 +72,7 @@ linkable across tools. The URLs do not resolve yet.
 | Q3    | Every item that transitively depends on Raw Quartz                                   |
 | Q4    | Manufacturer recipes ranked by energy per item (all draw 55 MW, so MW alone is flat) |
 | Q5    | Nodes within 1 km of a base at (-1,640 m, -330 m) that feed the Steel Ingot chain    |
+| Q6    | Records with facts from a non-commercial (CC BY-NC) source                           |
 
 Both views first add the same derived relation, `madeFrom` (`derive.sql` /
 `derive.ru`): product made from ingredient, over standard machine recipes, with
@@ -79,6 +80,29 @@ raw resources as leaves.
 
 Units: rates per minute, fluids in m³, power in MW, durations in seconds, world
 coordinates in metres (x east, y south; north is −y).
+
+## Provenance
+
+Every record (item, recipe, building, schematic, resource node, collectible)
+has a required `derivedFrom` list naming the sources its facts come from
+(`prov:wasDerivedFrom` in RDF, `<Class>_derivedFrom` tables in SQLite). Each
+`Source` has an ID, a name, a pinned URL, a licence and a retrieval date.
+
+| Source ID                     | Cited by                                                      |
+| ----------------------------- | ------------------------------------------------------------- |
+| `source-docs-en`              | Items, recipes, buildings, schematics                         |
+| `source-factory-buildings`    | Buildings with a clearance box (`footprint`)                  |
+| `source-world-resource-nodes` | Resource nodes, wells and geysers                             |
+| `source-world-collectibles`   | Collectibles                                                  |
+| `source-satisfactory-wiki`    | Hard Drive and FICSIT Coupon items; the Smelter's sloop slots |
+
+The input snapshot doesn't tag records itself, so `src/provenance.ts` attaches
+`derivedFrom` at build time from `meta.json` and the rules above. Limits, until
+the data pipeline moves here:
+
+- `retrievedAt` is the date the input bundle was built (`meta.json`
+  `generatedAt`). The commit-pinned URLs fix the content regardless.
+- Wiki facts point at the wiki, not at a pinned page revision.
 
 ## Known data gaps
 
@@ -99,6 +123,9 @@ fails CI.
   in one `ItemAmount` table with no role column. The JSON is unchanged.
 - **Inlining is set per class** with `slot_usage`. A slot inlined in one class
   and referenced in another otherwise confuses `gen-shacl`.
+- **Source URLs are IRIs.** `gen-jsonld-context` types `uri` slots as
+  `xsd:anyURI` literals but `gen-shacl` expects IRIs, so the build emits
+  `schema:url` as an IRI.
 - **Numbers are `double`.** `xsd:float` is 32-bit in SPARQL engines and loses
   precision on world coordinates.
 - **Oxigraph 0.5.11 arithmetic.** It groups chained `-` and `/` from the right
@@ -110,7 +137,8 @@ fails CI.
 
 ## Roadmap
 
-1. Provenance on every record (source, pinned URL, retrieval date, licence).
+1. ~~Provenance on every record (source, pinned URL, retrieval date, licence).~~
+   Done; see [Provenance](#provenance).
 2. Open Factory Plan v0: a plan schema, validator and conformance fixtures.
 3. Move the data pipeline here, so the Field Guide consumes this repository.
 4. Publish an npm package and browsable data (Datasette Lite), plus the RDF

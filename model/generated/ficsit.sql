@@ -102,15 +102,34 @@
 --     * Slot: y
 --     * Slot: z
 --     * Slot: GameData_id Description: Autocreated FK slot
+-- # Class: Source Description: A pinned upstream source that records are derived from. The URL pins an exact revision, so the content behind it does not change.
+--     * Slot: id Description: Stable source ID, e.g. `source-docs-en`.
+--     * Slot: name
+--     * Slot: url Description: Pinned URL of the source (a commit-pinned file, or a wiki page).
+--     * Slot: licence Description: Licence of the source, as stated by its publisher.
+--     * Slot: retrievedAt Description: Date the input bundle was built from this source.
+--     * Slot: GameData_id Description: Autocreated FK slot
+-- # Class: Item_derivedFrom
+--     * Slot: Item_id Description: Autocreated FK slot
+--     * Slot: derivedFrom_id Description: Sources this record's facts come from.
 -- # Class: Recipe_producedIn
 --     * Slot: Recipe_id Description: Autocreated FK slot
 --     * Slot: producedIn_id Description: Factory buildings that can run this recipe.
+-- # Class: Recipe_derivedFrom
+--     * Slot: Recipe_id Description: Autocreated FK slot
+--     * Slot: derivedFrom_id Description: Sources this record's facts come from.
+-- # Class: Building_derivedFrom
+--     * Slot: Building_id Description: Autocreated FK slot
+--     * Slot: derivedFrom_id Description: Sources this record's facts come from.
 -- # Class: ExtractorSpec_resources
 --     * Slot: ExtractorSpec_id Description: Autocreated FK slot
 --     * Slot: resources_id
 -- # Class: Schematic_dependsOn
 --     * Slot: Schematic_id Description: Autocreated FK slot
 --     * Slot: dependsOn_id
+-- # Class: Schematic_derivedFrom
+--     * Slot: Schematic_id Description: Autocreated FK slot
+--     * Slot: derivedFrom_id Description: Sources this record's facts come from.
 -- # Class: SchematicUnlocks_recipes
 --     * Slot: SchematicUnlocks_id Description: Autocreated FK slot
 --     * Slot: recipes_id Description: Recipes this schematic unlocks (references).
@@ -123,6 +142,12 @@
 -- # Class: SchematicUnlocks_scannerObjects
 --     * Slot: SchematicUnlocks_id Description: Autocreated FK slot
 --     * Slot: scannerObjects
+-- # Class: ResourceNode_derivedFrom
+--     * Slot: ResourceNode_id Description: Autocreated FK slot
+--     * Slot: derivedFrom_id Description: Sources this record's facts come from.
+-- # Class: Collectible_derivedFrom
+--     * Slot: Collectible_id Description: Autocreated FK slot
+--     * Slot: derivedFrom_id Description: Sources this record's facts come from.
 
 CREATE TABLE "GameData" (
 	id INTEGER NOT NULL,
@@ -251,6 +276,18 @@ CREATE TABLE "Collectible" (
 );
 CREATE INDEX "ix_Collectible_id" ON "Collectible" (id);
 
+CREATE TABLE "Source" (
+	id TEXT NOT NULL,
+	name TEXT NOT NULL,
+	url TEXT NOT NULL,
+	licence TEXT NOT NULL,
+	"retrievedAt" DATE NOT NULL,
+	"GameData_id" INTEGER,
+	PRIMARY KEY (id),
+	FOREIGN KEY("GameData_id") REFERENCES "GameData" (id)
+);
+CREATE INDEX "ix_Source_id" ON "Source" (id);
+
 CREATE TABLE "SchematicUnlocks_scannerResources" (
 	"SchematicUnlocks_id" INTEGER,
 	"scannerResources" TEXT,
@@ -321,6 +358,16 @@ CREATE TABLE "ResourceNode" (
 );
 CREATE INDEX "ix_ResourceNode_id" ON "ResourceNode" (id);
 
+CREATE TABLE "Item_derivedFrom" (
+	"Item_id" TEXT,
+	"derivedFrom_id" TEXT NOT NULL,
+	PRIMARY KEY ("Item_id", "derivedFrom_id"),
+	FOREIGN KEY("Item_id") REFERENCES "Item" (id),
+	FOREIGN KEY("derivedFrom_id") REFERENCES "Source" (id)
+);
+CREATE INDEX "ix_Item_derivedFrom_Item_id" ON "Item_derivedFrom" ("Item_id");
+CREATE INDEX "ix_Item_derivedFrom_derivedFrom_id" ON "Item_derivedFrom" ("derivedFrom_id");
+
 CREATE TABLE "Recipe_producedIn" (
 	"Recipe_id" TEXT,
 	"producedIn_id" TEXT,
@@ -330,6 +377,26 @@ CREATE TABLE "Recipe_producedIn" (
 );
 CREATE INDEX "ix_Recipe_producedIn_Recipe_id" ON "Recipe_producedIn" ("Recipe_id");
 CREATE INDEX "ix_Recipe_producedIn_producedIn_id" ON "Recipe_producedIn" ("producedIn_id");
+
+CREATE TABLE "Recipe_derivedFrom" (
+	"Recipe_id" TEXT,
+	"derivedFrom_id" TEXT NOT NULL,
+	PRIMARY KEY ("Recipe_id", "derivedFrom_id"),
+	FOREIGN KEY("Recipe_id") REFERENCES "Recipe" (id),
+	FOREIGN KEY("derivedFrom_id") REFERENCES "Source" (id)
+);
+CREATE INDEX "ix_Recipe_derivedFrom_Recipe_id" ON "Recipe_derivedFrom" ("Recipe_id");
+CREATE INDEX "ix_Recipe_derivedFrom_derivedFrom_id" ON "Recipe_derivedFrom" ("derivedFrom_id");
+
+CREATE TABLE "Building_derivedFrom" (
+	"Building_id" TEXT,
+	"derivedFrom_id" TEXT NOT NULL,
+	PRIMARY KEY ("Building_id", "derivedFrom_id"),
+	FOREIGN KEY("Building_id") REFERENCES "Building" (id),
+	FOREIGN KEY("derivedFrom_id") REFERENCES "Source" (id)
+);
+CREATE INDEX "ix_Building_derivedFrom_Building_id" ON "Building_derivedFrom" ("Building_id");
+CREATE INDEX "ix_Building_derivedFrom_derivedFrom_id" ON "Building_derivedFrom" ("derivedFrom_id");
 
 CREATE TABLE "ExtractorSpec_resources" (
 	"ExtractorSpec_id" INTEGER,
@@ -351,6 +418,16 @@ CREATE TABLE "Schematic_dependsOn" (
 CREATE INDEX "ix_Schematic_dependsOn_Schematic_id" ON "Schematic_dependsOn" ("Schematic_id");
 CREATE INDEX "ix_Schematic_dependsOn_dependsOn_id" ON "Schematic_dependsOn" ("dependsOn_id");
 
+CREATE TABLE "Schematic_derivedFrom" (
+	"Schematic_id" TEXT,
+	"derivedFrom_id" TEXT NOT NULL,
+	PRIMARY KEY ("Schematic_id", "derivedFrom_id"),
+	FOREIGN KEY("Schematic_id") REFERENCES "Schematic" (id),
+	FOREIGN KEY("derivedFrom_id") REFERENCES "Source" (id)
+);
+CREATE INDEX "ix_Schematic_derivedFrom_Schematic_id" ON "Schematic_derivedFrom" ("Schematic_id");
+CREATE INDEX "ix_Schematic_derivedFrom_derivedFrom_id" ON "Schematic_derivedFrom" ("derivedFrom_id");
+
 CREATE TABLE "SchematicUnlocks_recipes" (
 	"SchematicUnlocks_id" INTEGER,
 	recipes_id TEXT,
@@ -371,6 +448,16 @@ CREATE TABLE "SchematicUnlocks_schematics" (
 CREATE INDEX "ix_SchematicUnlocks_schematics_SchematicUnlocks_id" ON "SchematicUnlocks_schematics" ("SchematicUnlocks_id");
 CREATE INDEX "ix_SchematicUnlocks_schematics_schematics_id" ON "SchematicUnlocks_schematics" (schematics_id);
 
+CREATE TABLE "Collectible_derivedFrom" (
+	"Collectible_id" TEXT,
+	"derivedFrom_id" TEXT NOT NULL,
+	PRIMARY KEY ("Collectible_id", "derivedFrom_id"),
+	FOREIGN KEY("Collectible_id") REFERENCES "Collectible" (id),
+	FOREIGN KEY("derivedFrom_id") REFERENCES "Source" (id)
+);
+CREATE INDEX "ix_Collectible_derivedFrom_Collectible_id" ON "Collectible_derivedFrom" ("Collectible_id");
+CREATE INDEX "ix_Collectible_derivedFrom_derivedFrom_id" ON "Collectible_derivedFrom" ("derivedFrom_id");
+
 CREATE TABLE "GeneratorFuel" (
 	id INTEGER NOT NULL,
 	item TEXT NOT NULL,
@@ -384,4 +471,14 @@ CREATE TABLE "GeneratorFuel" (
 	FOREIGN KEY(byproduct_id) REFERENCES "ItemAmount" (id)
 );
 CREATE INDEX "ix_GeneratorFuel_id" ON "GeneratorFuel" (id);
+
+CREATE TABLE "ResourceNode_derivedFrom" (
+	"ResourceNode_id" TEXT,
+	"derivedFrom_id" TEXT NOT NULL,
+	PRIMARY KEY ("ResourceNode_id", "derivedFrom_id"),
+	FOREIGN KEY("ResourceNode_id") REFERENCES "ResourceNode" (id),
+	FOREIGN KEY("derivedFrom_id") REFERENCES "Source" (id)
+);
+CREATE INDEX "ix_ResourceNode_derivedFrom_ResourceNode_id" ON "ResourceNode_derivedFrom" ("ResourceNode_id");
+CREATE INDEX "ix_ResourceNode_derivedFrom_derivedFrom_id" ON "ResourceNode_derivedFrom" ("derivedFrom_id");
 

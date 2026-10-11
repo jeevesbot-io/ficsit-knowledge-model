@@ -1,0 +1,10 @@
+# Q6. Records with facts from a non-commercial (CC BY-NC) source, which any reuse
+# must keep non-commercial and share-alike.
+SELECT ?record ?source ?licence
+WHERE {
+  ?record prov:wasDerivedFrom ?source .
+  ?source a ficsit:Source ;
+    dcterms:license ?licence .
+  FILTER (CONTAINS(?licence, "NC"))
+}
+ORDER BY ?record ?source

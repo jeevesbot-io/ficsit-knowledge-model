@@ -38,7 +38,9 @@ Generated ${meta.generatedAt} from ${meta.gameVersion}.
 
 ## Sources
 
-${meta.sources.map((s) => `- ${s.name}: <${s.url}> (${s.licence})`).join('\n')}
+Every record cites its sources with \`derivedFrom\` (\`prov:wasDerivedFrom\` in RDF).
+
+${data.sources.map((s) => `- \`${s.id}\`: ${s.name}: <${s.url}> (${s.licence}; retrieved ${s.retrievedAt})`).join('\n')}
 
 Game data © Coffee Stain Studios. Facts derived from the Satisfactory Wiki are
 CC BY-NC-SA: any reuse of those parts must be non-commercial, share-alike and
