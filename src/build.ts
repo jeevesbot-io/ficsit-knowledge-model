@@ -1,6 +1,7 @@
 /**
  * Writes the published views of the game data:
  *
+ *   dist/game.json    the game data with provenance (validates against ficsit.schema.json)
  *   dist/game.sqlite  tables from the LinkML-generated DDL
  *   dist/game.ttl     RDF (Turtle) via the LinkML-generated JSON-LD context
  *   dist/NOTICE.md    sources, licences and the sourcing caveat
@@ -17,6 +18,8 @@ mkdirSync(OUT_DIR, { recursive: true });
 
 const data = loadGameData();
 const meta = loadMeta();
+
+writeFileSync(join(OUT_DIR, 'game.json'), `${JSON.stringify(data)}\n`);
 
 const sqlitePath = join(OUT_DIR, 'game.sqlite');
 rmSync(sqlitePath, { force: true });
@@ -38,7 +41,9 @@ Generated ${meta.generatedAt} from ${meta.gameVersion}.
 
 ## Sources
 
-${meta.sources.map((s) => `- ${s.name}: <${s.url}> (${s.licence})`).join('\n')}
+Every record cites its sources with \`derivedFrom\` (\`prov:wasDerivedFrom\` in RDF).
+
+${data.sources.map((s) => `- \`${s.id}\`: ${s.name}: <${s.url}> (${s.licence}; retrieved ${s.retrievedAt})`).join('\n')}
 
 Game data © Coffee Stain Studios. Facts derived from the Satisfactory Wiki are
 CC BY-NC-SA: any reuse of those parts must be non-commercial, share-alike and
@@ -46,4 +51,6 @@ credit the wiki. The schema and tooling are MIT.
 `;
 writeFileSync(join(OUT_DIR, 'NOTICE.md'), notice);
 
-console.log(`Wrote game.sqlite, game.ttl (${store.size} triples) and NOTICE.md to ${OUT_DIR}`);
+console.log(
+  `Wrote game.json, game.sqlite, game.ttl (${store.size} triples) and NOTICE.md to ${OUT_DIR}`,
+);

@@ -1,0 +1,72 @@
+{
+  "ofpVersion": "0",
+  "name": "Screws from two sites",
+  "description": "One factory supplies another; an overclocked line.",
+  "gameVersion": "1.1",
+  "tool": {
+    "name": "Hand-written fixture",
+    "toolVersion": "0",
+    "url": "https://github.com/solstice035/ficsit-knowledge-model"
+  },
+  "factories": [
+    {
+      "factoryId": "ingots",
+      "name": "Ingot smelter",
+      "location": {
+        "x": -1640,
+        "y": -330,
+        "z": 20
+      },
+      "inputs": [
+        {
+          "item": "Desc_OreIron_C",
+          "ratePerMin": 30
+        }
+      ],
+      "lines": [
+        {
+          "recipe": "Recipe_IngotIron_C",
+          "machines": 1
+        }
+      ],
+      "outputs": [
+        {
+          "item": "Desc_IronIngot_C",
+          "ratePerMin": 30
+        }
+      ]
+    },
+    {
+      "factoryId": "screws",
+      "name": "Screw works",
+      "location": {
+        "x": -1500,
+        "y": -400
+      },
+      "inputs": [
+        {
+          "item": "Desc_IronIngot_C",
+          "ratePerMin": 30,
+          "fromFactory": "ingots"
+        }
+      ],
+      "lines": [
+        {
+          "recipe": "Recipe_IronRod_C",
+          "machines": 1,
+          "clockPercent": 200
+        },
+        {
+          "recipe": "Recipe_Screw_C",
+          "machines": 3
+        }
+      ],
+      "outputs": [
+        {
+          "item": "Desc_IronScrew_C",
+          "ratePerMin": 120
+        }
+      ]
+    }
+  ]
+}

@@ -20,6 +20,7 @@ import {
   foreignKeyGaps,
   loadGameData,
   runSparql,
+  runSparqlText,
   runSql,
   validateShacl,
 } from '../src/graph.ts';
@@ -152,6 +153,70 @@ describe('example queries: SQL and SPARQL agree', () => {
       resource: 'Desc_OreIron_C',
       purity: 'pure',
     });
+  });
+});
+
+describe('provenance', () => {
+  const records = () => [
+    ...data.items,
+    ...data.recipes,
+    ...data.buildings,
+    ...data.schematics,
+    ...data.resourceNodes,
+    ...data.collectibles,
+  ];
+
+  it('every record cites at least one known source', () => {
+    const known = new Set(data.sources.map((s) => s.id));
+    const uncited = records().filter(
+      (r) => !r.derivedFrom.length || !r.derivedFrom.every((s) => known.has(s)),
+    );
+    expect(uncited.map((r) => r.id)).toEqual([]);
+  });
+
+  it('every source has a pinned URL, a licence and a retrieval date', () => {
+    for (const s of data.sources) {
+      expect(s.url).toMatch(/^https:\/\//);
+      // Files are pinned to a 40-character commit SHA; wiki facts aren't yet (README.md).
+      if (s.id !== 'source-satisfactory-wiki') expect(s.url).toMatch(/\/[0-9a-f]{40}\//);
+      expect(s.licence).not.toBe('');
+      expect(s.retrievedAt).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+    }
+  });
+
+  it('every source is cited, and the SQL and RDF views count citations alike', () => {
+    const sqlCount = db
+      .prepare(
+        `SELECT COUNT(*) AS n FROM (${[
+          'Item',
+          'Recipe',
+          'Building',
+          'Schematic',
+          'ResourceNode',
+          'Collectible',
+        ]
+          .map((t) => `SELECT "derivedFrom_id" FROM "${t}_derivedFrom"`)
+          .join(' UNION ALL ')})`,
+      )
+      .get() as { n: number };
+    const [rdfCount] = runSparqlText(
+      store,
+      'SELECT (COUNT(*) AS ?n) { ?r prov:wasDerivedFrom ?s }',
+    );
+    expect(Number(rdfCount?.n)).toBe(sqlCount.n);
+    expect(sqlCount.n).toBe(records().reduce((n, r) => n + r.derivedFrom.length, 0));
+    const cited = new Set(records().flatMap((r) => r.derivedFrom));
+    expect(data.sources.map((s) => s.id).filter((s) => !cited.has(s))).toEqual([]);
+  });
+
+  it('Q6 records with non-commercial facts', () => {
+    const sql = runSql(db, 'q6-non-commercial-records');
+    expectSameRows(sql, runSparql(store, 'q6-non-commercial-records'));
+    expect(sql.map((r) => r.record)).toEqual([
+      'Build_SmelterMk1_C',
+      'Desc_HardDrive_C',
+      'Desc_ResourceSinkCoupon_C',
+    ]);
   });
 });
 

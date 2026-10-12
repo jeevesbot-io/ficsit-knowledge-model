@@ -2,21 +2,29 @@
 
 Open data model for Satisfactory game data. One LinkML schema
 (`model/ficsit.linkml.yaml`) generates JSON Schema, SQL DDL, a JSON-LD context
-and SHACL. Read `README.md` first.
+and SHACL. `model/ofp.linkml.yaml` defines Open Factory Plan, a portable plan
+format. Read `README.md` first.
 
 ## Commands
 
 - `npm test`: JSON Schema, SHACL, and the SQL ↔ SPARQL example queries (Vitest, Node)
 - `npm run lint`, `npm run typecheck`, `npm run format:check`
-- `npm run build`: writes `dist/game.sqlite`, `dist/game.ttl` and `dist/NOTICE.md`
+- `npm run build`: writes `dist/game.json`, `dist/game.sqlite`, `dist/game.ttl` and `dist/NOTICE.md`
+- `npm run site`: writes `dist/site/` for GitHub Pages (after `build`)
+- `npm run pack:smoke`: packs the npm package and uses it from a scratch project
 - `npm run gen`: regenerates `model/generated/` from the schema (needs `uv`)
+- `npm run ofp:validate -- plan.json`: checks an Open Factory Plan (`ofp/SPEC.md`)
+- `npm run ofp:convert -- <import|export> <sft|logistics> <in> <out>`: converts plans
 
-Done = `npm run format:check && npm run lint && npm run typecheck && npm test && npm run build` all green.
+Done = `npm run format:check && npm run lint && npm run typecheck && npm test && npm run build` all green
+(CI also runs `npm run site` and `npm run pack:smoke`).
 
 ## Rules
 
 - `model/generated/` is **generated**: never hand-edit it. Change the YAML and
   run `npm run gen`. CI regenerates it and fails on drift.
+- Each OFP validation rule has a stable code, documented in `ofp/SPEC.md` and
+  covered by a fixture in `ofp/fixtures/manifest.json`.
 - `data/field-guide/` is an input snapshot: never hand-edit it (see `data/README.md`).
 - Every SPARQL query brackets chained arithmetic: Oxigraph 0.5.11 groups `-`
   and `/` from the right.

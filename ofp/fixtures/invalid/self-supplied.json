@@ -1,0 +1,23 @@
+{
+  "ofpVersion": "0",
+  "name": "Self-supplied",
+  "factories": [
+    {
+      "factoryId": "frames",
+      "name": "Frames",
+      "outputs": [
+        {
+          "item": "Desc_ModularFrame_C",
+          "ratePerMin": 5
+        }
+      ],
+      "inputs": [
+        {
+          "item": "Desc_ModularFrame_C",
+          "ratePerMin": 5,
+          "fromFactory": "frames"
+        }
+      ]
+    }
+  ]
+}

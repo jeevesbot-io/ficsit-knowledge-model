@@ -1,0 +1,19 @@
+{
+  "ofpVersion": "0",
+  "name": "Unknown building",
+  "factories": [
+    {
+      "factoryId": "f",
+      "name": "F",
+      "inputs": [],
+      "lines": [
+        {
+          "recipe": "Recipe_IronRod_C",
+          "building": "Build_NotInTheGame_C",
+          "machines": 1
+        }
+      ],
+      "outputs": []
+    }
+  ]
+}

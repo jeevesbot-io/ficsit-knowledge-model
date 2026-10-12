@@ -1,0 +1,15 @@
+{
+  "name": "No version",
+  "factories": [
+    {
+      "factoryId": "frames",
+      "name": "Frames",
+      "outputs": [
+        {
+          "item": "Desc_ModularFrame_C",
+          "ratePerMin": 5
+        }
+      ]
+    }
+  ]
+}

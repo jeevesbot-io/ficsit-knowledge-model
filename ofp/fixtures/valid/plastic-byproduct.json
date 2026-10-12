@@ -1,0 +1,33 @@
+{
+  "ofpVersion": "0",
+  "name": "Plastic",
+  "description": "Fluids in m³/min and a byproduct listed as an output.",
+  "factories": [
+    {
+      "factoryId": "refinery",
+      "name": "Refinery",
+      "inputs": [
+        {
+          "item": "Desc_LiquidOil_C",
+          "ratePerMin": 30
+        }
+      ],
+      "lines": [
+        {
+          "recipe": "Recipe_Plastic_C",
+          "machines": 1
+        }
+      ],
+      "outputs": [
+        {
+          "item": "Desc_Plastic_C",
+          "ratePerMin": 20
+        },
+        {
+          "item": "Desc_HeavyOilResidue_C",
+          "ratePerMin": 10
+        }
+      ]
+    }
+  ]
+}

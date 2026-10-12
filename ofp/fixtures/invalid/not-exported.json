@@ -1,0 +1,33 @@
+{
+  "ofpVersion": "0",
+  "name": "Not exported",
+  "factories": [
+    {
+      "factoryId": "frames",
+      "name": "Frames",
+      "outputs": [
+        {
+          "item": "Desc_ModularFrame_C",
+          "ratePerMin": 5
+        }
+      ]
+    },
+    {
+      "factoryId": "rotors",
+      "name": "Rotors",
+      "outputs": [
+        {
+          "item": "Desc_Rotor_C",
+          "ratePerMin": 5
+        }
+      ],
+      "inputs": [
+        {
+          "item": "Desc_IronRod_C",
+          "ratePerMin": 5,
+          "fromFactory": "frames"
+        }
+      ]
+    }
+  ]
+}

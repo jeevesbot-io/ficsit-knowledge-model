@@ -1,0 +1,16 @@
+{
+  "ofpVersion": "0",
+  "name": "Unknown item",
+  "factories": [
+    {
+      "factoryId": "frames",
+      "name": "Frames",
+      "outputs": [
+        {
+          "item": "Desc_NotInTheGame_C",
+          "ratePerMin": 5
+        }
+      ]
+    }
+  ]
+}

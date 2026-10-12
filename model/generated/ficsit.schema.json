@@ -22,6 +22,13 @@
                 "category": {
                     "$ref": "#/$defs/BuildingCategory"
                 },
+                "derivedFrom": {
+                    "description": "Sources this record's facts come from.",
+                    "items": {
+                        "type": "string"
+                    },
+                    "type": "array"
+                },
                 "extractor": {
                     "anyOf": [
                         {
@@ -99,7 +106,8 @@
             },
             "required": [
                 "id",
-                "category"
+                "category",
+                "derivedFrom"
             ],
             "title": "Building",
             "type": "object"
@@ -119,6 +127,13 @@
             "additionalProperties": false,
             "description": "A Mercer Sphere, Somersloop, Hard Drive crash site or Power Slug.",
             "properties": {
+                "derivedFrom": {
+                    "description": "Sources this record's facts come from.",
+                    "items": {
+                        "type": "string"
+                    },
+                    "type": "array"
+                },
                 "id": {
                     "description": "The game's class name, e.g. `Desc_IronPlate_C`.",
                     "type": "string"
@@ -151,7 +166,8 @@
                 "type",
                 "x",
                 "y",
-                "z"
+                "z",
+                "derivedFrom"
             ],
             "title": "Collectible",
             "type": "object"
@@ -275,6 +291,15 @@
                         "array",
                         "null"
                     ]
+                },
+                "sources": {
+                    "items": {
+                        "$ref": "#/$defs/Source"
+                    },
+                    "type": [
+                        "array",
+                        "null"
+                    ]
                 }
             },
             "title": "GameData",
@@ -362,6 +387,13 @@
             "additionalProperties": false,
             "description": "An item, fluid or gas (`Desc_*_C`).",
             "properties": {
+                "derivedFrom": {
+                    "description": "Sources this record's facts come from.",
+                    "items": {
+                        "type": "string"
+                    },
+                    "type": "array"
+                },
                 "description": {
                     "type": [
                         "string",
@@ -411,7 +443,8 @@
             },
             "required": [
                 "id",
-                "form"
+                "form",
+                "derivedFrom"
             ],
             "title": "Item",
             "type": "object"
@@ -498,6 +531,13 @@
                         "null"
                     ]
                 },
+                "derivedFrom": {
+                    "description": "Sources this record's facts come from.",
+                    "items": {
+                        "type": "string"
+                    },
+                    "type": "array"
+                },
                 "durationS": {
                     "type": "number"
                 },
@@ -565,7 +605,8 @@
             "required": [
                 "id",
                 "alternate",
-                "durationS"
+                "durationS",
+                "derivedFrom"
             ],
             "title": "Recipe",
             "type": "object"
@@ -574,6 +615,13 @@
             "additionalProperties": false,
             "description": "A resource node, well or geyser in the world. `resource` is an item ID, or `geothermal` for geysers.",
             "properties": {
+                "derivedFrom": {
+                    "description": "Sources this record's facts come from.",
+                    "items": {
+                        "type": "string"
+                    },
+                    "type": "array"
+                },
                 "id": {
                     "description": "The game's class name, e.g. `Desc_IronPlate_C`.",
                     "type": "string"
@@ -606,7 +654,8 @@
                 "type",
                 "x",
                 "y",
-                "z"
+                "z",
+                "derivedFrom"
             ],
             "title": "ResourceNode",
             "type": "object"
@@ -632,6 +681,13 @@
                         "array",
                         "null"
                     ]
+                },
+                "derivedFrom": {
+                    "description": "Sources this record's facts come from.",
+                    "items": {
+                        "type": "string"
+                    },
+                    "type": "array"
                 },
                 "id": {
                     "description": "The game's class name, e.g. `Desc_IronPlate_C`.",
@@ -676,7 +732,8 @@
             "required": [
                 "id",
                 "type",
-                "tier"
+                "tier",
+                "derivedFrom"
             ],
             "title": "Schematic",
             "type": "object"
@@ -754,6 +811,42 @@
             "title": "SchematicUnlocks",
             "type": "object"
         },
+        "Source": {
+            "additionalProperties": false,
+            "description": "A pinned upstream source that records are derived from. The URL pins an exact revision, so the content behind it does not change.",
+            "properties": {
+                "id": {
+                    "description": "Stable source ID, e.g. `source-docs-en`.",
+                    "type": "string"
+                },
+                "licence": {
+                    "description": "Licence of the source, as stated by its publisher.",
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "retrievedAt": {
+                    "description": "Date the input bundle was built from this source.",
+                    "format": "date",
+                    "type": "string"
+                },
+                "url": {
+                    "description": "Pinned URL of the source (a commit-pinned file, or a wiki page).",
+                    "format": "uri",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "id",
+                "name",
+                "url",
+                "licence",
+                "retrievedAt"
+            ],
+            "title": "Source",
+            "type": "object"
+        },
         "VariablePower": {
             "additionalProperties": false,
             "description": "",
@@ -829,6 +922,15 @@
         "schematics": {
             "items": {
                 "$ref": "#/$defs/Schematic"
+            },
+            "type": [
+                "array",
+                "null"
+            ]
+        },
+        "sources": {
+            "items": {
+                "$ref": "#/$defs/Source"
             },
             "type": [
                 "array",

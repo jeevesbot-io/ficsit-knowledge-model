@@ -1,0 +1,137 @@
+{
+  "ofpVersion": "0",
+  "fixtures": [
+    {
+      "file": "valid/iron-plates.json",
+      "valid": true,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "file": "valid/targets-only.json",
+      "valid": true,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "file": "valid/plastic-byproduct.json",
+      "valid": true,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "file": "valid/two-factories.json",
+      "valid": true,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "file": "valid/somersloop.json",
+      "valid": true,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "file": "valid/surplus-warning.json",
+      "valid": true,
+      "errors": [],
+      "warnings": ["surplus"]
+    },
+    {
+      "file": "invalid/schema-missing-version.json",
+      "valid": false,
+      "errors": ["schema"],
+      "warnings": []
+    },
+    {
+      "file": "invalid/schema-no-factories.json",
+      "valid": false,
+      "errors": ["schema"],
+      "warnings": []
+    },
+    {
+      "file": "invalid/schema-clock-out-of-range.json",
+      "valid": false,
+      "errors": ["schema"],
+      "warnings": []
+    },
+    {
+      "file": "invalid/schema-fractional-machines.json",
+      "valid": false,
+      "errors": ["schema"],
+      "warnings": []
+    },
+    {
+      "file": "invalid/unknown-recipe.json",
+      "valid": false,
+      "errors": ["unknown-recipe"],
+      "warnings": []
+    },
+    {
+      "file": "invalid/recipe-not-machine.json",
+      "valid": false,
+      "errors": ["recipe-not-machine"],
+      "warnings": []
+    },
+    {
+      "file": "invalid/unknown-building.json",
+      "valid": false,
+      "errors": ["unknown-building"],
+      "warnings": []
+    },
+    {
+      "file": "invalid/building-cannot-run-recipe.json",
+      "valid": false,
+      "errors": ["building-cannot-run-recipe"],
+      "warnings": []
+    },
+    {
+      "file": "invalid/too-many-somersloops.json",
+      "valid": false,
+      "errors": ["too-many-somersloops"],
+      "warnings": []
+    },
+    {
+      "file": "invalid/unknown-item.json",
+      "valid": false,
+      "errors": ["unknown-item"],
+      "warnings": []
+    },
+    {
+      "file": "invalid/duplicate-factory-id.json",
+      "valid": false,
+      "errors": ["duplicate-factory-id"],
+      "warnings": []
+    },
+    {
+      "file": "invalid/unknown-from-factory.json",
+      "valid": false,
+      "errors": ["unknown-from-factory"],
+      "warnings": []
+    },
+    {
+      "file": "invalid/self-supplied.json",
+      "valid": false,
+      "errors": ["self-supplied"],
+      "warnings": []
+    },
+    {
+      "file": "invalid/not-exported.json",
+      "valid": false,
+      "errors": ["not-exported"],
+      "warnings": []
+    },
+    {
+      "file": "invalid/over-drawn.json",
+      "valid": false,
+      "errors": ["over-drawn"],
+      "warnings": []
+    },
+    {
+      "file": "invalid/unbalanced.json",
+      "valid": false,
+      "errors": ["unbalanced"],
+      "warnings": []
+    }
+  ]
+}

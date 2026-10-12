@@ -15,6 +15,8 @@ import rdf from '@zazuko/env/web.js';
 import jsonld from 'jsonld';
 import { Store, type Term, defaultGraph as oxigraphDefaultGraph } from 'oxigraph';
 import SHACLValidator from 'rdf-validate-shacl';
+import { DATA_NS, VOCAB_NS } from './ns.ts';
+import { type SourcedGameData, withProvenance } from './provenance.ts';
 import type {
   Building,
   Collectible,
@@ -31,33 +33,25 @@ export const MODEL_DIR = join(ROOT, 'model', 'generated');
 /** Input snapshot from the FICSIT Field Guide data pipeline (see data/README.md). */
 const DATA_DIR = join(ROOT, 'data', 'field-guide');
 
-/** Namespace for data IRIs (`fgd:Desc_IronPlate_C`). */
-export const DATA_NS = 'https://solstice035.github.io/ficsit-knowledge-model/id/';
-/** Namespace for the vocabulary (`ficsit:Recipe`, `ficsit:producedIn`). */
-export const VOCAB_NS = 'https://solstice035.github.io/ficsit-knowledge-model/vocab#';
+export { DATA_NS, VOCAB_NS } from './ns.ts';
 
-export interface GameData {
-  items: Item[];
-  recipes: Recipe[];
-  buildings: Building[];
-  schematics: Schematic[];
-  resourceNodes: ResourceNode[];
-  collectibles: Collectible[];
-}
+/** The game data with provenance on every record (see src/provenance.ts). */
+export type GameData = SourcedGameData;
 
 function readJson<T>(path: string): T {
   return JSON.parse(readFileSync(path, 'utf8')) as T;
 }
 
 export function loadGameData(): GameData {
-  return {
-    items: readJson(join(DATA_DIR, 'items.json')),
-    recipes: readJson(join(DATA_DIR, 'recipes.json')),
-    buildings: readJson(join(DATA_DIR, 'buildings.json')),
-    schematics: readJson(join(DATA_DIR, 'schematics.json')),
-    resourceNodes: readJson(join(DATA_DIR, 'nodes.json')),
-    collectibles: readJson(join(DATA_DIR, 'collectibles.json')),
+  const raw = {
+    items: readJson<Item[]>(join(DATA_DIR, 'items.json')),
+    recipes: readJson<Recipe[]>(join(DATA_DIR, 'recipes.json')),
+    buildings: readJson<Building[]>(join(DATA_DIR, 'buildings.json')),
+    schematics: readJson<Schematic[]>(join(DATA_DIR, 'schematics.json')),
+    resourceNodes: readJson<ResourceNode[]>(join(DATA_DIR, 'nodes.json')),
+    collectibles: readJson<Collectible[]>(join(DATA_DIR, 'collectibles.json')),
   };
+  return withProvenance(raw, loadMeta());
 }
 
 export function loadMeta(): DataMeta {
@@ -89,8 +83,18 @@ export function buildSqlite(data: GameData, path = ':memory:'): DatabaseSync {
   const variablePower = (vp?: { minMW: number; maxMW: number }) =>
     vp ? insert('VariablePower', vp) : null;
 
+  /** Rows for `<Class>_derivedFrom`, the join table LinkML makes for provenance. */
+  const derivedFrom = (table: string, id: string, sources: string[]) => {
+    for (const s of sources)
+      insert(`${table}_derivedFrom`, { [`${table}_id`]: id, derivedFrom_id: s });
+  };
+
   db.exec('BEGIN');
-  for (const i of data.items) insert('Item', { ...i });
+  for (const s of data.sources) insert('Source', { ...s });
+  for (const { derivedFrom: sources, ...i } of data.items) {
+    insert('Item', i);
+    derivedFrom('Item', i.id, sources);
+  }
   for (const r of data.recipes) {
     insert('Recipe', {
       id: r.id,
@@ -102,6 +106,7 @@ export function buildSqlite(data: GameData, path = ':memory:'): DatabaseSync {
       workshop: r.workshop,
       variablePower_id: variablePower(r.variablePower),
     });
+    derivedFrom('Recipe', r.id, r.derivedFrom);
     amounts('Ingredient', { Recipe_id: r.id }, r.ingredients);
     amounts('Product', { Recipe_id: r.id }, r.products);
     for (const b of r.producedIn)
@@ -142,6 +147,7 @@ export function buildSqlite(data: GameData, path = ':memory:'): DatabaseSync {
       generator_id: generatorId,
       variablePower_id: variablePower(b.variablePower),
     });
+    derivedFrom('Building', b.id, b.derivedFrom);
     amounts('ItemAmount', { Building_id: b.id }, b.buildCost);
   }
   for (const s of data.schematics) {
@@ -176,13 +182,18 @@ export function buildSqlite(data: GameData, path = ':memory:'): DatabaseSync {
       mamTree: s.mamTree,
       unlocks_id: unlocksId,
     });
+    derivedFrom('Schematic', s.id, s.derivedFrom);
     amounts('ItemAmount', { Schematic_id: s.id }, s.cost);
     for (const d of s.dependsOn)
       insert('Schematic_dependsOn', { Schematic_id: s.id, dependsOn_id: d });
   }
-  for (const n of data.resourceNodes) insert('ResourceNode', { ...n });
+  for (const { derivedFrom: sources, ...n } of data.resourceNodes) {
+    insert('ResourceNode', n);
+    derivedFrom('ResourceNode', n.id, sources);
+  }
   for (const c of data.collectibles) {
     insert('Collectible', { id: c.id, type: c.type, x: c.x, y: c.y, z: c.z });
+    derivedFrom('Collectible', c.id, c.derivedFrom);
     amounts('ItemAmount', { Collectible_id: c.id }, c.unlockCost);
   }
   db.exec('COMMIT');
@@ -259,6 +270,9 @@ export function toJsonLd(data: GameData): object {
     ),
     ...data.resourceNodes.map((x) => typed('ResourceNode', x)),
     ...data.collectibles.map((x) => typed('Collectible', x, { unlockCost: 'ItemAmount' })),
+    // gen-jsonld-context types `uri` slots as xsd:anyURI literals, but gen-shacl
+    // expects IRIs; an IRI is the better RDF, so emit a node reference.
+    ...data.sources.map((x) => typed('Source', { ...x, url: { '@id': x.url } })),
   ];
   return { '@context': [context, { '@base': DATA_NS }], '@graph': graph };
 }
@@ -279,6 +293,8 @@ export async function buildStore(data: GameData): Promise<Store> {
 export const SPARQL_PREFIXES = `PREFIX ficsit: <${VOCAB_NS}>
 PREFIX fgd: <${DATA_NS}>
 PREFIX schema: <http://schema.org/>
+PREFIX prov: <http://www.w3.org/ns/prov#>
+PREFIX dcterms: <http://purl.org/dc/terms/>
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 `;
 
@@ -310,7 +326,12 @@ export function runSql(db: DatabaseSync, name: string): Row[] {
 }
 
 export function runSparql(store: Store, name: string): Row[] {
-  const query = SPARQL_PREFIXES + readFileSync(join(QUERY_DIR, `${name}.rq`), 'utf8');
+  return runSparqlText(store, readFileSync(join(QUERY_DIR, `${name}.rq`), 'utf8'));
+}
+
+/** Runs a SELECT query (with the standard prefixes) and returns plain rows. */
+export function runSparqlText(store: Store, sparql: string): Row[] {
+  const query = SPARQL_PREFIXES + sparql;
   const results = store.query(query) as Map<string, Term>[];
   return results.map((binding) => {
     const row: Row = {};
@@ -355,7 +376,7 @@ export async function validateShacl(store: Store): Promise<ShaclSummary> {
   const violations: Record<string, number> = {};
   for (const result of report.results) {
     const component = result.sourceConstraintComponent?.value.split('#')[1] ?? '?';
-    const path = result.path?.value.split('#')[1] ?? '?';
+    const path = result.path?.value.split(/[#/]/).pop() ?? '?';
     const key = `${component} ${path}`;
     violations[key] = (violations[key] ?? 0) + 1;
   }

@@ -14,7 +14,9 @@ version: 0.1.0
 prefixes:
   ficsit: https://solstice035.github.io/ficsit-knowledge-model/vocab#
   fgd: https://solstice035.github.io/ficsit-knowledge-model/id/
+  dcterms: http://purl.org/dc/terms/
   linkml: https://w3id.org/linkml/
+  prov: http://www.w3.org/ns/prov#
   schema: http://schema.org/
   xsd: http://www.w3.org/2001/XMLSchema#
 
@@ -35,6 +37,7 @@ classes:
       - schematics
       - resourceNodes
       - collectibles
+      - sources
     slot_usage:
       recipes:
         inlined_as_list: true
@@ -53,6 +56,7 @@ classes:
       - energyMJ
       - radioactive
       - isResource
+      - derivedFrom
 
   ItemAmount:
     description: A quantity of one item, used for ingredients, products and costs.
@@ -88,6 +92,7 @@ classes:
       - buildGun
       - workshop
       - variablePower
+      - derivedFrom
 
   VariablePower:
     class_uri: ficsit:VariablePower
@@ -112,6 +117,7 @@ classes:
       - beltRate
       - pipeRate
       - variablePower
+      - derivedFrom
 
   Footprint:
     description: Clearance box in metres.
@@ -154,6 +160,7 @@ classes:
       - unlocks
       - dependsOn
       - mamTree
+      - derivedFrom
     slot_usage:
       type:
         range: SchematicType
@@ -186,6 +193,7 @@ classes:
       - x
       - y
       - z
+      - derivedFrom
     slot_usage:
       type:
         range: NodeType
@@ -200,9 +208,27 @@ classes:
       - y
       - z
       - unlockCost
+      - derivedFrom
     slot_usage:
       type:
         range: CollectibleType
+
+  Source:
+    description: >-
+      A pinned upstream source that records are derived from. The URL pins an
+      exact revision, so the content behind it does not change.
+    class_uri: ficsit:Source
+    slots:
+      - id
+      - name
+      - url
+      - licence
+      - retrievedAt
+    slot_usage:
+      id:
+        description: Stable source ID, e.g. `source-docs-en`.
+      name:
+        required: true
 
 slots:
   # --- identity -------------------------------------------------------------
@@ -238,6 +264,31 @@ slots:
     range: Collectible
     multivalued: true
     inlined_as_list: true
+  sources:
+    range: Source
+    multivalued: true
+    inlined_as_list: true
+
+  # --- provenance -------------------------------------------------------------
+  derivedFrom:
+    range: Source
+    multivalued: true
+    required: true
+    slot_uri: prov:wasDerivedFrom
+    description: Sources this record's facts come from.
+  url:
+    range: uri
+    required: true
+    slot_uri: schema:url
+    description: Pinned URL of the source (a commit-pinned file, or a wiki page).
+  licence:
+    required: true
+    slot_uri: dcterms:license
+    description: Licence of the source, as stated by its publisher.
+  retrievedAt:
+    range: date
+    required: true
+    description: Date the input bundle was built from this source.
 
   # --- items ------------------------------------------------------------------
   form:

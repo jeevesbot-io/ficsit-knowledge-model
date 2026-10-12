@@ -30,6 +30,8 @@ jobs:
       - run: npm run typecheck
       - run: npm test
       - run: npm run build
+      - run: npm run site
+      - run: npm run pack:smoke
 
   model:
     name: Generated model in sync

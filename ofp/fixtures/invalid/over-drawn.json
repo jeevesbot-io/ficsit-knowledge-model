@@ -1,0 +1,33 @@
+{
+  "ofpVersion": "0",
+  "name": "Over-drawn",
+  "factories": [
+    {
+      "factoryId": "frames",
+      "name": "Frames",
+      "outputs": [
+        {
+          "item": "Desc_ModularFrame_C",
+          "ratePerMin": 5
+        }
+      ]
+    },
+    {
+      "factoryId": "frame-users",
+      "name": "Frame users",
+      "outputs": [
+        {
+          "item": "Desc_ModularFrameHeavy_C",
+          "ratePerMin": 5
+        }
+      ],
+      "inputs": [
+        {
+          "item": "Desc_ModularFrame_C",
+          "ratePerMin": 8,
+          "fromFactory": "frames"
+        }
+      ]
+    }
+  ]
+}

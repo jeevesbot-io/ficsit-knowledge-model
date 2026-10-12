@@ -1,0 +1,18 @@
+{
+  "ofpVersion": "0",
+  "name": "Build Gun recipe",
+  "factories": [
+    {
+      "factoryId": "f",
+      "name": "F",
+      "inputs": [],
+      "lines": [
+        {
+          "recipe": "Recipe_AssemblerMk1_C",
+          "machines": 1
+        }
+      ],
+      "outputs": []
+    }
+  ]
+}
