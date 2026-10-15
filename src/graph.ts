@@ -16,9 +16,9 @@ import jsonld from 'jsonld';
 import { Store, type Term, defaultGraph as oxigraphDefaultGraph } from 'oxigraph';
 import SHACLValidator from 'rdf-validate-shacl';
 import { DATA_NS, VOCAB_NS } from './ns.ts';
-import { type SourcedGameData, withProvenance } from './provenance.ts';
 import type {
   Building,
+  GameData,
   Collectible,
   DataMeta,
   Item,
@@ -26,6 +26,7 @@ import type {
   Recipe,
   ResourceNode,
   Schematic,
+  Sourced,
 } from './types.ts';
 
 export const ROOT = join(import.meta.dirname, '..');
@@ -35,23 +36,23 @@ const DATA_DIR = join(ROOT, 'data', 'generated');
 
 export { DATA_NS, VOCAB_NS } from './ns.ts';
 
-/** The game data with provenance on every record (see src/provenance.ts). */
-export type GameData = SourcedGameData;
+export type { GameData } from './types.ts';
 
 function readJson<T>(path: string): T {
   return JSON.parse(readFileSync(path, 'utf8')) as T;
 }
 
 export function loadGameData(): GameData {
-  const raw = {
-    items: readJson<Item[]>(join(DATA_DIR, 'items.json')),
-    recipes: readJson<Recipe[]>(join(DATA_DIR, 'recipes.json')),
-    buildings: readJson<Building[]>(join(DATA_DIR, 'buildings.json')),
-    schematics: readJson<Schematic[]>(join(DATA_DIR, 'schematics.json')),
-    resourceNodes: readJson<ResourceNode[]>(join(DATA_DIR, 'nodes.json')),
-    collectibles: readJson<Collectible[]>(join(DATA_DIR, 'collectibles.json')),
+  // The pipeline writes `derivedFrom` on every record and the cited sources in meta.json.
+  return {
+    items: readJson<Sourced<Item>[]>(join(DATA_DIR, 'items.json')),
+    recipes: readJson<Sourced<Recipe>[]>(join(DATA_DIR, 'recipes.json')),
+    buildings: readJson<Sourced<Building>[]>(join(DATA_DIR, 'buildings.json')),
+    schematics: readJson<Sourced<Schematic>[]>(join(DATA_DIR, 'schematics.json')),
+    resourceNodes: readJson<Sourced<ResourceNode>[]>(join(DATA_DIR, 'nodes.json')),
+    collectibles: readJson<Sourced<Collectible>[]>(join(DATA_DIR, 'collectibles.json')),
+    sources: loadMeta().sources,
   };
-  return withProvenance(raw, loadMeta());
 }
 
 export function loadMeta(): DataMeta {

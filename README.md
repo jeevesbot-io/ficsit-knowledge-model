@@ -164,13 +164,12 @@ has a required `derivedFrom` list naming the sources its facts come from
 | `source-world-collectibles`   | Collectibles                                                  |
 | `source-satisfactory-wiki`    | Hard Drive and FICSIT Coupon items; the Smelter's sloop slots |
 
-The input snapshot doesn't tag records itself, so `src/provenance.ts` attaches
-`derivedFrom` at build time from `meta.json` and the rules above. Limits, until
-the data pipeline moves here:
+The data pipeline writes `derivedFrom` on every record as it builds
+`data/generated/`, and lists the cited sources in `meta.json`. File sources are
+pinned to a commit SHA and their bytes to a SHA-256 in `data/sources.lock.json`.
+`retrievedAt` is the pinned `RETRIEVED_AT` date in `src/pipeline/sources.ts`.
 
-- `retrievedAt` is the date the input bundle was built (`meta.json`
-  `generatedAt`). The commit-pinned URLs fix the content regardless.
-- Wiki facts point at the wiki, not at a pinned page revision.
+Wiki facts still point at the wiki itself, not at a pinned page revision.
 
 ## Known data gaps
 

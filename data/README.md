@@ -26,6 +26,13 @@ Pinned by commit SHA in `src/pipeline/sources.ts`, with SHA-256 hashes in
 | `FactoryBuildings.json`           | satisfactory-logistics                                        | Building clearance boxes (floor plans) |
 | `satisfactory-tools-data1.0.json` | greeny/SatisfactoryTools                                      | Cross-check only                       |
 
+## Provenance
+
+Every record in `generated/` has `derivedFrom`, the IDs of the sources its
+facts come from. `meta.json` lists those sources with their pinned URLs,
+licences and `retrievedAt` dates. The Satisfactory Wiki (`source-satisfactory-wiki`)
+is cited by the hand-entered items and the Smelter's Somersloop override.
+
 ## Bumping a source
 
 1. Change the SHA in `src/pipeline/sources.ts` and set `RETRIEVED_AT` to today.

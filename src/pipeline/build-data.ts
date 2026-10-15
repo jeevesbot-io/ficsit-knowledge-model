@@ -23,6 +23,7 @@ import type {
   ResourceNode,
   Schematic,
   SchematicType,
+  Sourced,
 } from '../types.ts';
 import {
   type DocsClass,
@@ -37,7 +38,7 @@ import {
   round,
   str,
 } from './docs.ts';
-import { GAME_VERSION, GENERATED_DIR, RAW_DIR, RETRIEVED_AT, SOURCES } from './sources.ts';
+import { GAME_VERSION, GENERATED_DIR, RAW_DIR, RETRIEVED_AT, SOURCES, WIKI } from './sources.ts';
 
 // ---------------------------------------------------------------------------
 // Inputs
@@ -127,9 +128,12 @@ const MANUAL_ITEMS: Item[] = [
     isResource: false,
   },
 ];
+/** Items that came from MANUAL_ITEMS (the wiki) rather than the Docs. */
+const wikiItems = new Set<string>();
 for (const manual of MANUAL_ITEMS) {
   if (!formById.has(manual.id)) {
     items.push(manual);
+    wikiItems.add(manual.id);
     formById.set(manual.id, manual.form);
   }
 }
@@ -546,13 +550,34 @@ function writeRows(file: string, rows: unknown[]): void {
 
 mkdirSync(GENERATED_DIR, { recursive: true });
 
+/** Adds `derivedFrom`: the IDs of the sources a record's facts come from. */
+const tag = <T>(rows: T[], from: (row: T) => string[]): Sourced<T>[] =>
+  rows.map((row) => ({ ...row, derivedFrom: from(row) }));
+const docs = (): string[] => [SOURCES.docs.id];
+
 const buildingList = [...buildings.values()].sort(byId);
-writeRows('items.json', items.sort(byId));
-writeRows('recipes.json', recipes.sort(byId));
-writeRows('buildings.json', buildingList);
-writeRows('schematics.json', schematics.sort(byId));
-writeRows('nodes.json', nodes.sort(byId));
-writeRows('collectibles.json', collectibles.sort(byId));
+writeRows(
+  'items.json',
+  tag(items.sort(byId), (i) => (wikiItems.has(i.id) ? [WIKI.id] : docs())),
+);
+writeRows('recipes.json', tag(recipes.sort(byId), docs));
+writeRows(
+  'buildings.json',
+  tag(buildingList, (b) => [
+    SOURCES.docs.id,
+    ...(b.footprint ? [SOURCES.footprints.id] : []),
+    ...(b.id in SLOOP_SLOT_OVERRIDES ? [WIKI.id] : []),
+  ]),
+);
+writeRows('schematics.json', tag(schematics.sort(byId), docs));
+writeRows(
+  'nodes.json',
+  tag(nodes.sort(byId), () => [SOURCES.nodes.id]),
+);
+writeRows(
+  'collectibles.json',
+  tag(collectibles.sort(byId), () => [SOURCES.collectibles.id]),
+);
 
 const counts: Record<string, number> = {
   items: items.length,
@@ -565,9 +590,14 @@ const counts: Record<string, number> = {
 const meta: DataMeta = {
   generatedAt: RETRIEVED_AT,
   gameVersion: GAME_VERSION,
-  sources: Object.values(SOURCES)
-    .filter((s) => s !== SOURCES.crossCheck)
-    .map((s) => ({ name: s.name, url: s.url, licence: s.licence })),
+  // Every source a record cites; the cross-check informs no record.
+  sources: [...Object.values(SOURCES).filter((s) => s !== SOURCES.crossCheck), WIKI].map((s) => ({
+    id: s.id,
+    name: s.name,
+    url: s.url,
+    licence: s.licence,
+    retrievedAt: RETRIEVED_AT,
+  })),
   counts,
 };
 writeFileSync(join(GENERATED_DIR, 'meta.json'), `${JSON.stringify(meta, null, 2)}\n`);

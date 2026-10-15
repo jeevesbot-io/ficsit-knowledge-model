@@ -165,9 +165,34 @@ export interface Collectible {
   unlockCost?: ItemAmount[];
 }
 
+/** A pinned upstream source that records cite in `derivedFrom`. */
+export interface Source {
+  id: string;
+  name: string;
+  /** Pinned URL: a commit-pinned file, or a wiki page. */
+  url: string;
+  licence: string;
+  /** ISO date (YYYY-MM-DD) the pinned revision was fetched. */
+  retrievedAt: string;
+}
+
+/** A record with the sources its facts come from (`prov:wasDerivedFrom` in RDF). */
+export type Sourced<T> = T & { derivedFrom: string[] };
+
+/** The full bundle: every collection, plus the sources its records cite. */
+export interface GameData {
+  items: Sourced<Item>[];
+  recipes: Sourced<Recipe>[];
+  buildings: Sourced<Building>[];
+  schematics: Sourced<Schematic>[];
+  resourceNodes: Sourced<ResourceNode>[];
+  collectibles: Sourced<Collectible>[];
+  sources: Source[];
+}
+
 export interface DataMeta {
   generatedAt: string;
   gameVersion: string;
-  sources: { name: string; url: string; licence: string }[];
+  sources: Source[];
   counts: Record<string, number>;
 }
