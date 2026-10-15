@@ -35,7 +35,7 @@ npm run site    # dist/site: the static site for GitHub Pages (after npm run bui
 ```
 model/ficsit.linkml.yaml               ← single source of truth (LinkML)
   │  npm run gen  (pinned LinkML 1.12.0)
-  ├── generated/ficsit.schema.json     JSON Schema: validates data/field-guide/*.json
+  ├── generated/ficsit.schema.json     JSON Schema: validates data/generated/*.json
   ├── generated/ficsit.sql             SQL DDL: tables for game.sqlite
   ├── generated/ficsit.context.jsonld  JSON-LD context: turns the same JSON into RDF
   └── generated/ficsit.shacl.ttl       SHACL shapes: validates the RDF
@@ -44,7 +44,9 @@ model/ofp.linkml.yaml                  ← Open Factory Plan (ofp/SPEC.md)
   ├── generated/ofp.schema.json        JSON Schema for plans
   └── generated/ofp.context.jsonld     JSON-LD context: plans as RDF
 
-data/field-guide/*.json  ──  npm run build  ──►  dist/game.json
+pinned sources  ──  npm run data:fetch, data:build  ──►  data/generated/*.json
+
+data/generated/*.json    ──  npm run build  ──►  dist/game.json
                                                  dist/game.sqlite
                                                  dist/game.ttl
                                                  dist/NOTICE.md
@@ -53,7 +55,8 @@ data/field-guide/*.json  ──  npm run build  ──►  dist/game.json
 
 - `model/generated/` is committed and **generated**: never hand-edit it. Change
   the YAML and run `npm run gen`. CI regenerates it and fails on drift.
-- `data/field-guide/` is the input snapshot (see [data/README.md](data/README.md)).
+- `data/generated/` is built from pinned upstream sources by `src/pipeline/`
+  and is generated too (see [data/README.md](data/README.md)).
 - `dist/` is a git-ignored build output.
 
 ## Identifiers
@@ -206,7 +209,8 @@ fails CI.
    Done; see [Provenance](#provenance).
 2. ~~Open Factory Plan v0: a plan schema, validator and conformance fixtures.~~
    Done (draft); see [Open Factory Plan](#open-factory-plan).
-3. Move the data pipeline here, so the Field Guide consumes this repository.
+3. ~~Move the data pipeline here, so the Field Guide consumes this repository.~~
+   Done; see [data/README.md](data/README.md).
 4. Publish an npm package and browsable data (Datasette Lite), plus the RDF
    dump at stable URLs. Built (see [Package and site](#package-and-site));
    publishing to npm and turning on Pages are still to do.
