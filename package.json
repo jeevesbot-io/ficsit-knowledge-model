@@ -48,6 +48,9 @@
   },
   "scripts": {
     "gen": "sh scripts/gen.sh",
+    "data:fetch": "tsx src/pipeline/fetch-sources.ts",
+    "data:build": "tsx src/pipeline/build-data.ts",
+    "data:verify": "tsx src/pipeline/verify-data.ts",
     "build": "tsx src/build.ts",
     "build:lib": "tsc -p tsconfig.lib.json",
     "site": "tsx src/site.ts",

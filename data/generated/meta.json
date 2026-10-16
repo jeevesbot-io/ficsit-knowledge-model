@@ -3,24 +3,39 @@
   "gameVersion": "Update 1.1 Docs (valid for 1.2: no production recipe or milestone changes)",
   "sources": [
     {
+      "id": "source-docs-en",
       "name": "Satisfactory Docs (en-US), via rockfactory/satisfactory-logistics",
       "url": "https://raw.githubusercontent.com/rockfactory/satisfactory-logistics/bbd951f26507432d3e50923fb02d0348829b0752/data/docs-en.json",
-      "licence": "Game data © Coffee Stain Studios; repository MIT"
+      "licence": "Game data © Coffee Stain Studios; repository MIT",
+      "retrievedAt": "2026-10-10"
     },
     {
+      "id": "source-world-resource-nodes",
       "name": "World resource nodes (rockfactory/satisfactory-logistics ← Hirashi3630/satisfactory_node_heatmap)",
       "url": "https://raw.githubusercontent.com/rockfactory/satisfactory-logistics/bbd951f26507432d3e50923fb02d0348829b0752/src/recipes/WorldResourceNodes.json",
-      "licence": "MIT"
+      "licence": "MIT",
+      "retrievedAt": "2026-10-10"
     },
     {
+      "id": "source-world-collectibles",
       "name": "World collectibles (rockfactory/satisfactory-logistics)",
       "url": "https://raw.githubusercontent.com/rockfactory/satisfactory-logistics/bbd951f26507432d3e50923fb02d0348829b0752/src/recipes/WorldCollectibles.json",
-      "licence": "MIT"
+      "licence": "MIT",
+      "retrievedAt": "2026-10-10"
     },
     {
+      "id": "source-factory-buildings",
       "name": "Building clearance boxes (rockfactory/satisfactory-logistics)",
       "url": "https://raw.githubusercontent.com/rockfactory/satisfactory-logistics/bbd951f26507432d3e50923fb02d0348829b0752/src/recipes/FactoryBuildings.json",
-      "licence": "MIT"
+      "licence": "MIT",
+      "retrievedAt": "2026-10-10"
+    },
+    {
+      "id": "source-satisfactory-wiki",
+      "name": "Satisfactory Wiki",
+      "url": "https://satisfactory.wiki.gg/",
+      "licence": "CC BY-NC-SA",
+      "retrievedAt": "2026-10-10"
     }
   ],
   "counts": {

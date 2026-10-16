@@ -5,10 +5,9 @@
  */
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import type { SourcedGameData } from './provenance.ts';
+import type { GameData } from './types.ts';
 
 export { DATA_NS, OFP_NS, VOCAB_NS } from './ns.ts';
-export type { Source, Sourced, SourcedGameData as GameData } from './provenance.ts';
 export type * from './types.ts';
 export {
   type OfpGameData,
@@ -40,7 +39,7 @@ export {
 } from './interop/satisfactory-logistics.ts';
 
 /** The bundled game data (`dist/game.json`), with provenance on every record. */
-export function loadGameData(): SourcedGameData {
+export function loadGameData(): GameData {
   const path = join(import.meta.dirname, '..', 'dist', 'game.json');
-  return JSON.parse(readFileSync(path, 'utf8')) as SourcedGameData;
+  return JSON.parse(readFileSync(path, 'utf8')) as GameData;
 }

@@ -1,0 +1,27 @@
+{
+  "docs-en.json": {
+    "url": "https://raw.githubusercontent.com/rockfactory/satisfactory-logistics/bbd951f26507432d3e50923fb02d0348829b0752/data/docs-en.json",
+    "sha256": "ae6defa2b7255b96856df446f06b04c7e6e22f4c6693b25102be657f2acebc94",
+    "bytes": 5039030
+  },
+  "WorldResourceNodes.json": {
+    "url": "https://raw.githubusercontent.com/rockfactory/satisfactory-logistics/bbd951f26507432d3e50923fb02d0348829b0752/src/recipes/WorldResourceNodes.json",
+    "sha256": "ff70bde823006895bfb2286091046b0449f32e33f67911e1ccea6e2044a9d09f",
+    "bytes": 169384
+  },
+  "WorldCollectibles.json": {
+    "url": "https://raw.githubusercontent.com/rockfactory/satisfactory-logistics/bbd951f26507432d3e50923fb02d0348829b0752/src/recipes/WorldCollectibles.json",
+    "sha256": "a0f67473e31467af41bc21d0d9e7b09058921412d43f0d73f15d5f9f2c1a4161",
+    "bytes": 415168
+  },
+  "FactoryBuildings.json": {
+    "url": "https://raw.githubusercontent.com/rockfactory/satisfactory-logistics/bbd951f26507432d3e50923fb02d0348829b0752/src/recipes/FactoryBuildings.json",
+    "sha256": "fbe34a907f35686ef4d1c2200c0ac013b0b7ee5de62840b4f8af65b74903ef45",
+    "bytes": 118043
+  },
+  "satisfactory-tools-data1.0.json": {
+    "url": "https://raw.githubusercontent.com/greeny/SatisfactoryTools/a1eb2fef1d5293baa5cd33ae88d08032600c6996/data/data1.0.json",
+    "sha256": "4caf63ba1cfd495eb33534fd5d1ae92631e786e72ad833e39357cb5194faa35f",
+    "bytes": 1728029
+  }
+}

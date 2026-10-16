@@ -12,6 +12,7 @@ format. Read `README.md` first.
 - `npm run build`: writes `dist/game.json`, `dist/game.sqlite`, `dist/game.ttl` and `dist/NOTICE.md`
 - `npm run site`: writes `dist/site/` for GitHub Pages (after `build`)
 - `npm run pack:smoke`: packs the npm package and uses it from a scratch project
+- `npm run data:fetch`, `data:build`, `data:verify`: the data pipeline (`src/pipeline/`)
 - `npm run gen`: regenerates `model/generated/` from the schema (needs `uv`)
 - `npm run ofp:validate -- plan.json`: checks an Open Factory Plan (`ofp/SPEC.md`)
 - `npm run ofp:convert -- <import|export> <sft|logistics> <in> <out>`: converts plans
@@ -25,7 +26,8 @@ Done = `npm run format:check && npm run lint && npm run typecheck && npm test &&
   run `npm run gen`. CI regenerates it and fails on drift.
 - Each OFP validation rule has a stable code, documented in `ofp/SPEC.md` and
   covered by a fixture in `ofp/fixtures/manifest.json`.
-- `data/field-guide/` is an input snapshot: never hand-edit it (see `data/README.md`).
+- `data/generated/` is **generated** by `npm run data:build` from pinned sources: never
+  hand-edit it (see `data/README.md`). CI rebuilds it and fails on drift.
 - Every SPARQL query brackets chained arithmetic: Oxigraph 0.5.11 groups `-`
   and `/` from the right.
 - Pin dependency versions exactly. LinkML is pinned in `scripts/gen.sh`.
